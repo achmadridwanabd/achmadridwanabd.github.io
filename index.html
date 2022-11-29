@@ -1,0 +1,968 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script><script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="js/proj4.js"></script>
+        <script src="js/proj4leaflet.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="data/BatasAdministrasiKabKotaProvBali_1.js"></script>
+        <script src="data/PembobotanKecamatan_2.js"></script>
+        <script src="data/JalanKolektor_3.js"></script>
+        <script src="data/JalanArteri_4.js"></script>
+        <script src="data/JalanTol_5.js"></script>
+        <script src="data/SaranaIbadah_6.js"></script>
+        <script src="data/Pemerintahan_7.js"></script>
+        <script src="data/Pariwisata_Kab_Badung_8.js"></script>
+        <script src="data/KantorPolisi_9.js"></script>
+        <script src="data/FasilitasPendukung_10.js"></script>
+        <script src="data/RumahSakit_11.js"></script>
+        <script src="data/CagarBudaya_12.js"></script>
+        <script src="data/Pantai_13.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+        }
+        var crs = new L.Proj.CRS('EPSG:32750', '+proj=utm +zone=50 +south +datum=WGS84 +units=m +no_defs', {
+            resolutions: [2800, 1400, 700, 350, 175, 84, 42, 21, 11.2, 5.6, 2.8, 1.4, 0.7, 0.35, 0.14, 0.07],
+        });
+        var map = L.map('map', {
+            crs: crs,
+            continuousWorld: false,
+            worldCopyJump: false, 
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[-9.028668554570508,114.63546526142862],[-8.139947465824202,115.87724795318442]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_OpenTopoMap_0');
+        map.getPane('pane_OpenTopoMap_0').style.zIndex = 400;
+        var layer_OpenTopoMap_0 = L.tileLayer('https://a.tile.opentopomap.org/{z}/{x}/{y}.png', {
+            pane: 'pane_OpenTopoMap_0',
+            opacity: 1.0,
+            attribution: '<a href="https://www.openstreetmap.org/copyright">Kartendaten: © OpenStreetMap-Mitwirkende, SRTM | Kartendarstellung: © OpenTopoMap (CC-BY-SA)</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 18
+        });
+        layer_OpenTopoMap_0;
+        map.addLayer(layer_OpenTopoMap_0);
+        function pop_BatasAdministrasiKabKotaProvBali_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Kab/Kota</th>\
+                        <td>' + (feature.properties['Kab/Kota'] !== null ? autolinker.link(feature.properties['Kab/Kota'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Luas</th>\
+                        <td>' + (feature.properties['Luas'] !== null ? autolinker.link(feature.properties['Luas'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Luasnya</th>\
+                        <td>' + (feature.properties['Luasnya'] !== null ? autolinker.link(feature.properties['Luasnya'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Penduduk</th>\
+                        <td>' + (feature.properties['Penduduk'] !== null ? autolinker.link(feature.properties['Penduduk'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_BatasAdministrasiKabKotaProvBali_1_0() {
+            return {
+                pane: 'pane_BatasAdministrasiKabKotaProvBali_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_BatasAdministrasiKabKotaProvBali_1');
+        map.getPane('pane_BatasAdministrasiKabKotaProvBali_1').style.zIndex = 401;
+        map.getPane('pane_BatasAdministrasiKabKotaProvBali_1').style['mix-blend-mode'] = 'normal';
+        var layer_BatasAdministrasiKabKotaProvBali_1 = new L.geoJson(json_BatasAdministrasiKabKotaProvBali_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_BatasAdministrasiKabKotaProvBali_1',
+            layerName: 'layer_BatasAdministrasiKabKotaProvBali_1',
+            pane: 'pane_BatasAdministrasiKabKotaProvBali_1',
+            onEachFeature: pop_BatasAdministrasiKabKotaProvBali_1,
+            style: style_BatasAdministrasiKabKotaProvBali_1_0,
+        });
+        bounds_group.addLayer(layer_BatasAdministrasiKabKotaProvBali_1);
+        map.addLayer(layer_BatasAdministrasiKabKotaProvBali_1);
+        function pop_PembobotanKecamatan_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Kecamatan</th>\
+                        <td>' + (feature.properties['Kecamatan'] !== null ? autolinker.link(feature.properties['Kecamatan'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kabupaten</th>\
+                        <td>' + (feature.properties['Kabupaten'] !== null ? autolinker.link(feature.properties['Kabupaten'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Provinsi</th>\
+                        <td>' + (feature.properties['Provinsi'] !== null ? autolinker.link(feature.properties['Provinsi'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Penduduk</th>\
+                        <td>' + (feature.properties['Penduduk'] !== null ? autolinker.link(feature.properties['Penduduk'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NUMPOINTS'] !== null ? autolinker.link(feature.properties['NUMPOINTS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['bobot_all_'] !== null ? autolinker.link(feature.properties['bobot_all_'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['bobot_pant'] !== null ? autolinker.link(feature.properties['bobot_pant'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['bobot_tol'] !== null ? autolinker.link(feature.properties['bobot_tol'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">bobot tota</th>\
+                        <td>' + (feature.properties['bobot tota'] !== null ? autolinker.link(feature.properties['bobot tota'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">potensi</th>\
+                        <td>' + (feature.properties['potensi'] !== null ? autolinker.link(feature.properties['potensi'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_PembobotanKecamatan_2_0(feature) {
+            switch(String(feature.properties['potensi'])) {
+                case 'Rendah':
+                    return {
+                pane: 'pane_PembobotanKecamatan_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(68,1,84,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Sedang':
+                    return {
+                pane: 'pane_PembobotanKecamatan_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(33,144,141,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Tinggi':
+                    return {
+                pane: 'pane_PembobotanKecamatan_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,231,37,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_PembobotanKecamatan_2');
+        map.getPane('pane_PembobotanKecamatan_2').style.zIndex = 402;
+        map.getPane('pane_PembobotanKecamatan_2').style['mix-blend-mode'] = 'normal';
+        var layer_PembobotanKecamatan_2 = new L.geoJson(json_PembobotanKecamatan_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_PembobotanKecamatan_2',
+            layerName: 'layer_PembobotanKecamatan_2',
+            pane: 'pane_PembobotanKecamatan_2',
+            onEachFeature: pop_PembobotanKecamatan_2,
+            style: style_PembobotanKecamatan_2_0,
+        });
+        bounds_group.addLayer(layer_PembobotanKecamatan_2);
+        map.addLayer(layer_PembobotanKecamatan_2);
+        function pop_JalanKolektor_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_JalanKolektor_3_0() {
+            return {
+                pane: 'pane_JalanKolektor_3',
+                opacity: 1,
+                color: 'rgba(255,90,13,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_JalanKolektor_3');
+        map.getPane('pane_JalanKolektor_3').style.zIndex = 403;
+        map.getPane('pane_JalanKolektor_3').style['mix-blend-mode'] = 'normal';
+        var layer_JalanKolektor_3 = new L.geoJson(json_JalanKolektor_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_JalanKolektor_3',
+            layerName: 'layer_JalanKolektor_3',
+            pane: 'pane_JalanKolektor_3',
+            onEachFeature: pop_JalanKolektor_3,
+            style: style_JalanKolektor_3_0,
+        });
+        bounds_group.addLayer(layer_JalanKolektor_3);
+        map.addLayer(layer_JalanKolektor_3);
+        function pop_JalanArteri_4(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_JalanArteri_4_0() {
+            return {
+                pane: 'pane_JalanArteri_4',
+                opacity: 1,
+                color: 'rgba(255,90,13,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_JalanArteri_4');
+        map.getPane('pane_JalanArteri_4').style.zIndex = 404;
+        map.getPane('pane_JalanArteri_4').style['mix-blend-mode'] = 'normal';
+        var layer_JalanArteri_4 = new L.geoJson(json_JalanArteri_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_JalanArteri_4',
+            layerName: 'layer_JalanArteri_4',
+            pane: 'pane_JalanArteri_4',
+            onEachFeature: pop_JalanArteri_4,
+            style: style_JalanArteri_4_0,
+        });
+        bounds_group.addLayer(layer_JalanArteri_4);
+        map.addLayer(layer_JalanArteri_4);
+        function pop_JalanTol_5(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_JalanTol_5_0() {
+            return {
+                pane: 'pane_JalanTol_5',
+                opacity: 1,
+                color: 'rgba(219,30,42,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_JalanTol_5');
+        map.getPane('pane_JalanTol_5').style.zIndex = 405;
+        map.getPane('pane_JalanTol_5').style['mix-blend-mode'] = 'normal';
+        var layer_JalanTol_5 = new L.geoJson(json_JalanTol_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_JalanTol_5',
+            layerName: 'layer_JalanTol_5',
+            pane: 'pane_JalanTol_5',
+            onEachFeature: pop_JalanTol_5,
+            style: style_JalanTol_5_0,
+        });
+        bounds_group.addLayer(layer_JalanTol_5);
+        map.addLayer(layer_JalanTol_5);
+        function pop_SaranaIbadah_6(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAMOBJ'] !== null ? autolinker.link(feature.properties['NAMOBJ'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LUAS'] !== null ? autolinker.link(feature.properties['LUAS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FGSIBD'] !== null ? autolinker.link(feature.properties['FGSIBD'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FCODE'] !== null ? autolinker.link(feature.properties['FCODE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['REMARK'] !== null ? autolinker.link(feature.properties['REMARK'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SRS_ID'] !== null ? autolinker.link(feature.properties['SRS_ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LCODE'] !== null ? autolinker.link(feature.properties['LCODE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['METADATA'] !== null ? autolinker.link(feature.properties['METADATA'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_SaranaIbadah_6_0() {
+            return {
+                pane: 'pane_SaranaIbadah_6',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/amenity=place_of_worship.svg',
+            iconSize: [7.6, 7.6]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_SaranaIbadah_6');
+        map.getPane('pane_SaranaIbadah_6').style.zIndex = 406;
+        map.getPane('pane_SaranaIbadah_6').style['mix-blend-mode'] = 'normal';
+        var layer_SaranaIbadah_6 = new L.geoJson(json_SaranaIbadah_6, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_SaranaIbadah_6',
+            layerName: 'layer_SaranaIbadah_6',
+            pane: 'pane_SaranaIbadah_6',
+            onEachFeature: pop_SaranaIbadah_6,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_SaranaIbadah_6_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_SaranaIbadah_6);
+        map.addLayer(layer_SaranaIbadah_6);
+        function pop_Pemerintahan_7(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['REMARK'] !== null ? autolinker.link(feature.properties['REMARK'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Pemerintahan_7_0() {
+            return {
+                pane: 'pane_Pemerintahan_7',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/tourist_monument.svg',
+            iconSize: [11.399999999999999, 11.399999999999999]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Pemerintahan_7');
+        map.getPane('pane_Pemerintahan_7').style.zIndex = 407;
+        map.getPane('pane_Pemerintahan_7').style['mix-blend-mode'] = 'normal';
+        var layer_Pemerintahan_7 = new L.geoJson(json_Pemerintahan_7, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Pemerintahan_7',
+            layerName: 'layer_Pemerintahan_7',
+            pane: 'pane_Pemerintahan_7',
+            onEachFeature: pop_Pemerintahan_7,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Pemerintahan_7_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Pemerintahan_7);
+        map.addLayer(layer_Pemerintahan_7);
+        function pop_Pariwisata_Kab_Badung_8(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['alamat'] !== null ? autolinker.link(feature.properties['alamat'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['deskripsi'] !== null ? autolinker.link(feature.properties['deskripsi'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['namaobjek'] !== null ? autolinker.link(feature.properties['namaobjek'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['jenisobjek'] !== null ? autolinker.link(feature.properties['jenisobjek'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['layer'] !== null ? autolinker.link(feature.properties['layer'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Pariwisata_Kab_Badung_8_0() {
+            return {
+                pane: 'pane_Pariwisata_Kab_Badung_8',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(50,87,128,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(72,123,182,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Pariwisata_Kab_Badung_8');
+        map.getPane('pane_Pariwisata_Kab_Badung_8').style.zIndex = 408;
+        map.getPane('pane_Pariwisata_Kab_Badung_8').style['mix-blend-mode'] = 'normal';
+        var layer_Pariwisata_Kab_Badung_8 = new L.geoJson(json_Pariwisata_Kab_Badung_8, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Pariwisata_Kab_Badung_8',
+            layerName: 'layer_Pariwisata_Kab_Badung_8',
+            pane: 'pane_Pariwisata_Kab_Badung_8',
+            onEachFeature: pop_Pariwisata_Kab_Badung_8,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Pariwisata_Kab_Badung_8_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Pariwisata_Kab_Badung_8);
+        map.addLayer(layer_Pariwisata_Kab_Badung_8);
+        function pop_KantorPolisi_9(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['REMARK'] !== null ? autolinker.link(feature.properties['REMARK'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_KantorPolisi_9_0() {
+            return {
+                pane: 'pane_KantorPolisi_9',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/shopping_estateagent2.svg',
+            iconSize: [7.6, 7.6]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_KantorPolisi_9');
+        map.getPane('pane_KantorPolisi_9').style.zIndex = 409;
+        map.getPane('pane_KantorPolisi_9').style['mix-blend-mode'] = 'normal';
+        var layer_KantorPolisi_9 = new L.geoJson(json_KantorPolisi_9, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_KantorPolisi_9',
+            layerName: 'layer_KantorPolisi_9',
+            pane: 'pane_KantorPolisi_9',
+            onEachFeature: pop_KantorPolisi_9,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_KantorPolisi_9_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_KantorPolisi_9);
+        map.addLayer(layer_KantorPolisi_9);
+        function pop_FasilitasPendukung_10(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['alamat'] !== null ? autolinker.link(feature.properties['alamat'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['deskripsi'] !== null ? autolinker.link(feature.properties['deskripsi'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['namaobjek'] !== null ? autolinker.link(feature.properties['namaobjek'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['jenisobjek'] !== null ? autolinker.link(feature.properties['jenisobjek'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['layer'] !== null ? autolinker.link(feature.properties['layer'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_FasilitasPendukung_10_0() {
+            return {
+                pane: 'pane_FasilitasPendukung_10',
+                radius: 3.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_FasilitasPendukung_10');
+        map.getPane('pane_FasilitasPendukung_10').style.zIndex = 410;
+        map.getPane('pane_FasilitasPendukung_10').style['mix-blend-mode'] = 'normal';
+        var layer_FasilitasPendukung_10 = new L.geoJson(json_FasilitasPendukung_10, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_FasilitasPendukung_10',
+            layerName: 'layer_FasilitasPendukung_10',
+            pane: 'pane_FasilitasPendukung_10',
+            onEachFeature: pop_FasilitasPendukung_10,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_FasilitasPendukung_10_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_FasilitasPendukung_10);
+        map.addLayer(layer_FasilitasPendukung_10);
+        function pop_RumahSakit_11(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['REMARK'] !== null ? autolinker.link(feature.properties['REMARK'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_RumahSakit_11_0() {
+            return {
+                pane: 'pane_RumahSakit_11',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/amenity=pharmacy,dispensing=yes.svg',
+            iconSize: [7.6, 7.6]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_RumahSakit_11');
+        map.getPane('pane_RumahSakit_11').style.zIndex = 411;
+        map.getPane('pane_RumahSakit_11').style['mix-blend-mode'] = 'normal';
+        var layer_RumahSakit_11 = new L.geoJson(json_RumahSakit_11, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_RumahSakit_11',
+            layerName: 'layer_RumahSakit_11',
+            pane: 'pane_RumahSakit_11',
+            onEachFeature: pop_RumahSakit_11,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_RumahSakit_11_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_RumahSakit_11);
+        map.addLayer(layer_RumahSakit_11);
+        function pop_CagarBudaya_12(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAMOBJ'] !== null ? autolinker.link(feature.properties['NAMOBJ'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LUAS'] !== null ? autolinker.link(feature.properties['LUAS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FCODE'] !== null ? autolinker.link(feature.properties['FCODE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['REMARK'] !== null ? autolinker.link(feature.properties['REMARK'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SRS_ID'] !== null ? autolinker.link(feature.properties['SRS_ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LCODE'] !== null ? autolinker.link(feature.properties['LCODE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['METADATA'] !== null ? autolinker.link(feature.properties['METADATA'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_CagarBudaya_12_0() {
+            return {
+                pane: 'pane_CagarBudaya_12',
+                radius: 2.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(114,155,111,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_CagarBudaya_12');
+        map.getPane('pane_CagarBudaya_12').style.zIndex = 412;
+        map.getPane('pane_CagarBudaya_12').style['mix-blend-mode'] = 'normal';
+        var layer_CagarBudaya_12 = new L.geoJson(json_CagarBudaya_12, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_CagarBudaya_12',
+            layerName: 'layer_CagarBudaya_12',
+            pane: 'pane_CagarBudaya_12',
+            onEachFeature: pop_CagarBudaya_12,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_CagarBudaya_12_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_CagarBudaya_12);
+        map.addLayer(layer_CagarBudaya_12);
+        function pop_Pantai_13(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['alamat'] !== null ? autolinker.link(feature.properties['alamat'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">deskripsi</th>\
+                        <td>' + (feature.properties['deskripsi'] !== null ? autolinker.link(feature.properties['deskripsi'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">namaobjek</th>\
+                        <td>' + (feature.properties['namaobjek'] !== null ? autolinker.link(feature.properties['namaobjek'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">jenisobjek</th>\
+                        <td>' + (feature.properties['jenisobjek'] !== null ? autolinker.link(feature.properties['jenisobjek'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['layer'] !== null ? autolinker.link(feature.properties['layer'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Pantai_13_0() {
+            return {
+                pane: 'pane_Pantai_13',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/poi_boundary_administrative.svg',
+            iconSize: [11.399999999999999, 11.399999999999999]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Pantai_13');
+        map.getPane('pane_Pantai_13').style.zIndex = 413;
+        map.getPane('pane_Pantai_13').style['mix-blend-mode'] = 'normal';
+        var layer_Pantai_13 = new L.geoJson(json_Pantai_13, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Pantai_13',
+            layerName: 'layer_Pantai_13',
+            pane: 'pane_Pantai_13',
+            onEachFeature: pop_Pantai_13,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Pantai_13_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Pantai_13);
+        map.addLayer(layer_Pantai_13);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/Pantai_13.png" /> Pantai': layer_Pantai_13,'<img src="legend/CagarBudaya_12.png" /> Cagar Budaya': layer_CagarBudaya_12,'<img src="legend/RumahSakit_11.png" /> Rumah Sakit': layer_RumahSakit_11,'<img src="legend/FasilitasPendukung_10.png" /> Fasilitas Pendukung': layer_FasilitasPendukung_10,'<img src="legend/KantorPolisi_9.png" /> Kantor Polisi': layer_KantorPolisi_9,'<img src="legend/Pariwisata_Kab_Badung_8.png" /> Pariwisata_Kab_Badung': layer_Pariwisata_Kab_Badung_8,'<img src="legend/Pemerintahan_7.png" /> Pemerintahan': layer_Pemerintahan_7,'<img src="legend/SaranaIbadah_6.png" /> Sarana Ibadah': layer_SaranaIbadah_6,'<img src="legend/JalanTol_5.png" /> Jalan Tol': layer_JalanTol_5,'<img src="legend/JalanArteri_4.png" /> Jalan Arteri': layer_JalanArteri_4,'<img src="legend/JalanKolektor_3.png" /> Jalan Kolektor': layer_JalanKolektor_3,'Pembobotan Kecamatan<br /><table><tr><td style="text-align: center;"><img src="legend/PembobotanKecamatan_2_Rendah0.png" /></td><td>Rendah</td></tr><tr><td style="text-align: center;"><img src="legend/PembobotanKecamatan_2_Sedang1.png" /></td><td>Sedang</td></tr><tr><td style="text-align: center;"><img src="legend/PembobotanKecamatan_2_Tinggi2.png" /></td><td>Tinggi</td></tr></table>': layer_PembobotanKecamatan_2,'<img src="legend/BatasAdministrasiKabKotaProvBali_1.png" /> Batas Administrasi Kab-Kota Prov Bali': layer_BatasAdministrasiKabKotaProvBali_1,"OpenTopoMap": layer_OpenTopoMap_0,},{collapsed:false}).addTo(map);
+        setBounds();
+        var i = 0;
+        layer_BatasAdministrasiKabKotaProvBali_1.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['Kab/Kota'] !== null?String('<div style="color: #000000; font-size: 8pt; font-style: italic; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['Kab/Kota']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_BatasAdministrasiKabKotaProvBali_1'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_PembobotanKecamatan_2.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['Kecamatan'] !== null?String('<div style="color: #000000; font-size: 7pt; font-weight: bold; font-style: italic; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['Kecamatan']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_PembobotanKecamatan_2'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_Pantai_13.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['namaobjek'] !== null?String('<div style="color: #1a4786; font-size: 7pt; font-style: italic; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['namaobjek']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_Pantai_13'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        map.addControl(new L.Control.Search({
+            layer: layer_Pantai_13,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'namaobjek'}));
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
+        resetLabels([layer_BatasAdministrasiKabKotaProvBali_1,layer_PembobotanKecamatan_2,layer_Pantai_13]);
+        map.on("zoomend", function(){
+            resetLabels([layer_BatasAdministrasiKabKotaProvBali_1,layer_PembobotanKecamatan_2,layer_Pantai_13]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_BatasAdministrasiKabKotaProvBali_1,layer_PembobotanKecamatan_2,layer_Pantai_13]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_BatasAdministrasiKabKotaProvBali_1,layer_PembobotanKecamatan_2,layer_Pantai_13]);
+        });
+        </script>
+    </body>
+</html>
